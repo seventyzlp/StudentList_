@@ -175,6 +175,10 @@ int main() {
 					Temp_student.is_changed = true;
 				}
 			}
+			else if (selected_combo_main == "change student profile") //修改学生信息界面
+			{
+				express_log = "press finish to save changes";
+			}
 		}
 		ImGui::SameLine();
 		if (ImGui::Button("Finish")) //把结束全体的输入
@@ -213,6 +217,41 @@ int main() {
 			if (selected_combo_main == "change student profile")
 			{
 				init(Temp_student);
+				if (selected_combo == "Name") //输入名字时
+				{
+					Namelist[selected - 1].Name = TextBox;  //直接保存到项目文件里面
+					express_log = "Name changed..";
+				}
+				else if (selected_combo == "Sex")
+				{
+					Namelist[selected - 1].Sex = TextBox;
+					express_log = "Sex changed..";
+				}
+				else if (selected_combo == "Age")
+				{
+					Namelist[selected - 1].Age = TextBox;
+					express_log = "Age changed..";
+				}
+				else if (selected_combo == "PhoneNumber")
+				{
+					Namelist[selected - 1].PhoneNumber = TextBox;
+					express_log = "PhoneNumber changed..";
+				}
+				else if (selected_combo == "Major")
+				{
+					Namelist[selected - 1].Major = TextBox;
+					express_log = "Major changed..";
+				}
+				else if (selected_combo == "Academy")
+				{
+					Namelist[selected - 1].Academy = TextBox;
+					express_log = "Academy changed..";
+				}
+				else if (selected_combo == "Univercity")
+				{
+					Namelist[selected - 1].univercity = TextBox;
+					express_log = "Univercity changed..";
+				}
 			}
 		}
 		ImGui::SameLine();
@@ -234,13 +273,16 @@ int main() {
 					output = "key:" + to_string(Namelist[j].key) + "  Name:" + Namelist[j].Name + " Sex:" + Namelist[j].Sex + " Age:" + Namelist[j].Age;
 					if (ImGui::Selectable(output.c_str()))
 					{
-						cout << Namelist[j].key << endl;
+						//cout << Namelist[j].key << endl;
+						selected = Namelist[j].key;//存储点击对象的key值
 					}
 				}
 			}
 			ImGui::EndListBox();
 		}
-
+		ImGui::Text("key selected :");
+		ImGui::SameLine();
+		ImGui::Text(to_string(selected).c_str());
 		// ImGui::ShowDemoWindow(); //实例项目
 		//-------------------------------------绘制窗口--------------------------//
 		ImGui::End();//窗口结束
