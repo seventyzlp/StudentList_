@@ -179,14 +179,17 @@ int main() {
 		ImGui::SameLine();
 		if (ImGui::Button("Finish")) //把结束全体的输入
 		{
-			for (i = 0; i < 19; i++)
+			for (i = 0; i < 20; i++)
 			{
+				//cout << i << endl;
 				if (!Namelist[i].is_used) {
+					Temp_student.key = i + 1; //并且赋值给temp 第一个数据就是1
+					//cout << "录入数据key：" << i << endl;
 					break; //找到数组最后位置
 				}
 			}
 			//-------------------------------------------添加学生成员-----------------------------------------//
-			if (selected_combo_main == "add student profile" && i < 19)
+			if (selected_combo_main == "add student profile" && Temp_student.key < 21)
 			{
 				if (Temp_student.is_changed == false) { //如果没有修改过，那么点finish就没有用
 					express_log = "remain unchanged!";
@@ -196,41 +199,29 @@ int main() {
 				{
 					Namelist[i] = Temp_student;
 					Namelist[i].is_used = true; //设置结构体数组被占用，也就是说进入下一排的数据编写
-
-					Temp_student.Name = "empty"; //初始化临时变量
-					Temp_student.Sex = "empty";
-					Temp_student.Age = "empty";
-					Temp_student.PhoneNumber = "empty";
-					Temp_student.Major = "empty";
-					Temp_student.Academy = "empty";
-					Temp_student.univercity = "empty";
+					init(Temp_student);
+					//cout << Namelist[i].key << endl;//看一眼key有没有被放进去 放进去了
 
 					express_log = "operation finished...";
 				}
 			}
-			else if (i >= 20 && selected_combo_main == "add student profile")//人满了
+			else if (Temp_student.key >= 21 && selected_combo_main == "add student profile")//人满了
 			{
 				express_log = "the list is Full!";
 			}
 			//--------------------------------------------修改学生信息-------------------------------------//
 			if (selected_combo_main == "change student profile")
 			{
-				Temp_student.Name = "empty"; //初始化临时变量
-				Temp_student.Sex = "empty";
-				Temp_student.Age = "empty";
-				Temp_student.PhoneNumber = "empty";
-				Temp_student.Major = "empty";
-				Temp_student.Academy = "empty";
-				Temp_student.univercity = "empty";
+				init(Temp_student);
 			}
 		}
 		ImGui::SameLine();
 		if (ImGui::Button("List")) {
-			list_flag = true;
+			list_flag = true; //修改可以看到list
 		}
 		ImGui::SameLine();
 		if (ImGui::Button("NOList")) {
-			list_flag = false;
+			list_flag = false;//修改不可以看到list
 		}
 		ImGui::Text(express_log.c_str());
 
@@ -238,25 +229,13 @@ int main() {
 		{
 			if (list_flag)  //flag 为true允许展示
 			{				//排除是output变量重复导致问题，排除循环导致，他妈的怎么回事
-				i = 0;
-				output = "Name:" + Namelist[i].Name + " Sex:" + Namelist[i].Sex + " Age:" + Namelist[i].Age + " Phone:" + Namelist[i].PhoneNumber;
-				if (ImGui::Selectable(output.c_str())) {
-					cout << 0 << endl;
-				}
-				i = 1;
-				output = "Name:" + Namelist[i].Name + " Sex:" + Namelist[i].Sex + " Age:" + Namelist[i].Age + " Phone:" + Namelist[i].PhoneNumber;
-				if (ImGui::Selectable(output.c_str())) {
-					cout << 1 << endl;
-				}
-				i = 2;
-				output = "Name:" + Namelist[i].Name + " Sex:" + Namelist[i].Sex + " Age:" + Namelist[i].Age + " Phone:" + Namelist[i].PhoneNumber;
-				if (ImGui::Selectable(output.c_str())) {
-					cout << 2 << endl;
-				}
-				i = 3;
-				output = "Name:" + Namelist[i].Name + " Sex:" + Namelist[i].Sex + " Age:" + Namelist[i].Age + " Phone:" + Namelist[i].PhoneNumber;
-				if (ImGui::Selectable(output.c_str())) {
-					cout << 3 << endl;
+				for (int j = 0; j < 20; j++)
+				{
+					output = "key:" + to_string(Namelist[j].key) + "  Name:" + Namelist[j].Name + " Sex:" + Namelist[j].Sex + " Age:" + Namelist[j].Age;
+					if (ImGui::Selectable(output.c_str()))
+					{
+						cout << Namelist[j].key << endl;
+					}
 				}
 			}
 			ImGui::EndListBox();
