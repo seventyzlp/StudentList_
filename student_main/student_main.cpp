@@ -19,6 +19,7 @@ GLFWwindow* Windows;
 //---------------------------------------------------------------------------------------------//
 #include "student_define.h"
 
+int search_time = 0;
 char TextBox[20];
 string test_text = "hello world";
 int Your_faith;
@@ -32,14 +33,11 @@ string output;
 int i;
 int selected;
 bool list_flag;
+bool is_search;
+int output_search[20][7];
+
 int main() {
-	Temp_student.Name = "empty"; //初始化临时变量
-	Temp_student.Sex = "empty";
-	Temp_student.Age = "empty";
-	Temp_student.PhoneNumber = "empty";
-	Temp_student.Major = "empty";
-	Temp_student.Academy = "empty";
-	Temp_student.univercity = "empty";
+	init(Temp_student);
 	//----------------------------------------窗口初始化------------------------------------------//
 	glfwInit();
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
@@ -130,8 +128,10 @@ int main() {
 
 		if (ImGui::Button("Accept")) //确认输入信息 按下accept按钮
 		{
+			//is_search = false; //默认不是搜索状态，采用常规的列表显示
 			if (selected_combo_main == "add student profile")
 			{
+				is_search = false;
 				if (selected_combo == "Name") //输入名字时
 				{
 					Temp_student.Name = TextBox;
@@ -177,7 +177,15 @@ int main() {
 			}
 			else if (selected_combo_main == "change student profile") //修改学生信息界面
 			{
+				is_search = false;
 				express_log = "press finish to save changes";
+			}
+			else if (selected_combo_main == "search student profile") { //查询学生信息系统，采用的是可以多条件叠加，并且实时显示
+				is_search = true; //进入搜索状态
+				search(Namelist, TextBox, selected_combo, search_time); //获取output数组
+				cout << output_search[0][0] << endl;
+				cout << output_search[1][0] << endl;
+				cout << output_search[2][0] << endl;
 			}
 		}
 		ImGui::SameLine();
@@ -253,6 +261,10 @@ int main() {
 					express_log = "Univercity changed..";
 				}
 			}
+			//--------------------------------------------查询学生信息-----------------------------//、
+			else if (selected_combo_main == "search student profile" && search_time < 7) {
+				search_time += 1; //进入下一个
+			}
 		}
 		ImGui::SameLine();
 		if (ImGui::Button("List")) {
@@ -266,8 +278,8 @@ int main() {
 
 		if (ImGui::BeginListBox("outputs"))
 		{
-			if (list_flag)  //flag 为true允许展示
-			{				//排除是output变量重复导致问题，排除循环导致，他妈的怎么回事
+			if (list_flag && !is_search)  //没有在搜索状态
+
 				for (int j = 0; j < 20; j++)
 				{
 					output = "key:" + to_string(Namelist[j].key) + "  Name:" + Namelist[j].Name + " Sex:" + Namelist[j].Sex + " Age:" + Namelist[j].Age;
@@ -276,6 +288,22 @@ int main() {
 						//cout << Namelist[j].key << endl;
 						selected = Namelist[j].key;//存储点击对象的key值
 					}
+				}
+
+			else if (is_search && list_flag) //搜索模式的显示
+			{
+				for (int i = 0; i < 20; i++) //最多七次的叠加排序，必须要同时满足才行
+				{
+					for (int j = 1; j < 7;j++) {
+						output_search[i][0] += output_search[i][j]; //把总和存储在第一项里面
+					}
+				}
+				for (int i = 0; i < 20; i++)
+				{
+					if (output_search[i][0] == search_time) { //筛选成功
+						output = "key:" + to_string(Namelist[i].key) + "  Name:" + Namelist[i].Name + " Sex:" + Namelist[i].Sex + " Age:" + Namelist[i].Age;
+						ImGui::Text(output.c_str());
+					} //输出筛选的项目
 				}
 			}
 			ImGui::EndListBox();
