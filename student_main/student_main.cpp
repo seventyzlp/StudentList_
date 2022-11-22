@@ -183,9 +183,7 @@ int main() {
 			else if (selected_combo_main == "search student profile") { //查询学生信息系统，采用的是可以多条件叠加，并且实时显示
 				is_search = true; //进入搜索状态
 				search(Namelist, TextBox, selected_combo, search_time); //获取output数组
-				cout << output_search[0][0] << endl;
-				cout << output_search[1][0] << endl;
-				cout << output_search[2][0] << endl;
+				express_log = selected_combo + " filtered...";
 			}
 		}
 		ImGui::SameLine();
@@ -274,6 +272,20 @@ int main() {
 		if (ImGui::Button("NOList")) {
 			list_flag = false;//修改不可以看到list
 		}
+		ImGui::SameLine();
+		if (is_search)
+		{
+			if (ImGui::Button("ClearFilter")) {
+				search_time = 0;
+				for (int i = 0; i < 20; i++)
+				{
+					for (int j = 1; j < 7;j++) {
+						output_search[i][j] = 0; //重置查询数据
+					}
+				}
+			}
+		}
+
 		ImGui::Text(express_log.c_str());
 
 		if (ImGui::BeginListBox("outputs"))
@@ -300,7 +312,7 @@ int main() {
 				}
 				for (int i = 0; i < 20; i++)
 				{
-					if (output_search[i][0] == search_time) { //筛选成功
+					if (output_search[i][0] == search_time && search_time != 0) { //筛选成功
 						output = "key:" + to_string(Namelist[i].key) + "  Name:" + Namelist[i].Name + " Sex:" + Namelist[i].Sex + " Age:" + Namelist[i].Age;
 						ImGui::Text(output.c_str());
 					} //输出筛选的项目
